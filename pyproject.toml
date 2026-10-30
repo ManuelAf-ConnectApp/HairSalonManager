@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "hair-salon-management"
 version = "0.1.0"
 description = "Gestión local de peluquerías — incremento base"
-readme = "README.es.md"
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = ["PySide6>=6.6,<7"]
 

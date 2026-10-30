@@ -30,7 +30,11 @@ class BackupTests(unittest.TestCase):
     def test_restore_rejects_unrelated_sqlite_file(self) -> None:
         unrelated = self.directory / "other.db"
         import sqlite3
-        with sqlite3.connect(unrelated) as connection:
+        connection = sqlite3.connect(unrelated)
+        try:
             connection.execute("CREATE TABLE notes (id INTEGER PRIMARY KEY)")
+            connection.commit()
+        finally:
+            connection.close()
         with self.assertRaisesRegex(BackupError, "no pertenece"):
             self.backups.restore_backup(unrelated)
