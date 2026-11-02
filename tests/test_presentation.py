@@ -5,7 +5,7 @@ import unittest
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from PySide6.QtWidgets import QApplication, QLabel
+from PySide6.QtWidgets import QApplication, QLabel, QPushButton
 
 from hair_salon_management.application.auth import AuthService
 from hair_salon_management.infrastructure.database import Database
@@ -34,3 +34,18 @@ class PresentationTests(unittest.TestCase):
         self.assertIn("qlineargradient", source)
         self.assertIn("#c91635", source)
         self.assertIn("#075ca8", source)
+
+    def test_sidebar_navigation_ignores_clicked_boolean(self) -> None:
+        with TemporaryDirectory() as directory:
+            database = Database(Path(directory) / "app.db")
+            database.migrate()
+            window = MainWindow(AuthService(database))
+            customers_button = next(
+                button for button in window.shell.findChildren(QPushButton)
+                if button.text() == "Clientes"
+            )
+
+            customers_button.click()
+
+            self.assertIs(window.content.currentWidget(), window.customers_page)
+            window.close()

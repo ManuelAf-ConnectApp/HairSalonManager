@@ -84,7 +84,9 @@ class MainWindow(QMainWindow):
 
     def _button(self, text: str, callback: Callable[[], None]) -> QPushButton:
         button = QPushButton(text)
-        button.clicked.connect(callback)
+        # ``clicked`` emits a ``checked`` boolean.  Consume it explicitly so it
+        # cannot replace values captured by callbacks such as the sidebar target.
+        button.clicked.connect(lambda _checked=False: callback())
         return button
 
     @staticmethod
